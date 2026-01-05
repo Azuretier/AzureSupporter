@@ -46,68 +46,108 @@ const MOCK_RULES: Rule[] = [
 
 const MOCK_ROLES: ServerRole[] = [
   {
-    id: 'dev-ts',
-    name: 'TypeScript Developer',
-    description: 'Passionate about TypeScript and type-safe development',
-    color: 'oklch(0.55 0.18 250)',
-    icon: '💠',
+    id: 'cutie',
+    name: '☆ଓ｡ Cutie ｡ଓ☆',
+    description: 'Called sweetheart and means a person with whom someone is having a romantic relationship',
+    color: 'oklch(0.75 0.18 350)',
+    icon: '💕',
+    category: 'special'
+  },
+  {
+    id: 'luminelle',
+    name: 'Luminelle',
+    description: 'Lightbringer',
+    color: 'oklch(0.80 0.15 60)',
+    icon: '✨',
+    category: 'special'
+  },
+  {
+    id: 'dreamer',
+    name: 'Dreamer',
+    description: 'Visionary',
+    color: 'oklch(0.65 0.18 280)',
+    icon: '🌙',
     category: 'interest'
   },
   {
-    id: 'dev-react',
-    name: 'React Enthusiast',
-    description: 'Building modern UIs with React',
-    color: 'oklch(0.60 0.20 200)',
-    icon: '⚛️',
+    id: 'enjoyer',
+    name: 'Community Fan',
+    description: 'Passionate supporter of the community',
+    color: 'oklch(0.70 0.15 200)',
+    icon: '🎮',
     category: 'interest'
   },
   {
-    id: 'cloud-azure',
-    name: 'Azure Expert',
-    description: 'Working with Microsoft Azure cloud services',
-    color: 'oklch(0.55 0.15 220)',
-    icon: '☁️',
-    category: 'interest'
-  },
-  {
-    id: 'contributor',
-    name: 'Active Contributor',
-    description: 'Regularly helps others and contributes to discussions',
-    color: 'oklch(0.65 0.15 60)',
+    id: 'talent',
+    name: 'Rising Star',
+    description: 'Emerging talent in the community',
+    color: 'oklch(0.75 0.20 45)',
     icon: '⭐',
     category: 'contribution'
   },
   {
-    id: 'helper',
-    name: 'Community Helper',
-    description: 'Goes out of their way to assist community members',
-    color: 'oklch(0.70 0.18 90)',
-    icon: '🤝',
+    id: 'gifted',
+    name: 'Gifted',
+    description: 'Naturally talented individual',
+    color: 'oklch(0.72 0.17 320)',
+    icon: '🎁',
     category: 'contribution'
   },
   {
-    id: 'active-daily',
-    name: 'Daily Active',
-    description: 'Logs in and participates every day',
-    color: 'oklch(0.60 0.20 290)',
-    icon: '🔥',
-    category: 'activity'
+    id: 'thinker',
+    name: 'Thinker',
+    description: 'Intelli people',
+    color: 'oklch(0.60 0.18 240)',
+    icon: '🧠',
+    category: 'interest'
   },
   {
-    id: 'night-owl',
-    name: 'Night Owl',
-    description: 'Most active during late night hours',
-    color: 'oklch(0.45 0.15 280)',
-    icon: '🦉',
-    category: 'activity'
+    id: 'smart',
+    name: 'Smart',
+    description: 'Smart as it needs no explanation',
+    color: 'oklch(0.65 0.15 190)',
+    icon: '💡',
+    category: 'interest'
   },
   {
-    id: 'event-organizer',
-    name: 'Event Organizer',
-    description: 'Helps organize community events and activities',
-    color: 'oklch(0.75 0.18 30)',
-    icon: '🎉',
+    id: 'artist',
+    name: 'Artist',
+    description: 'Expresser',
+    color: 'oklch(0.70 0.20 30)',
+    icon: '🎨',
+    category: 'contribution'
+  },
+  {
+    id: 'creator',
+    name: 'Creator',
+    description: 'Creator',
+    color: 'oklch(0.68 0.18 90)',
+    icon: '🛠️',
+    category: 'contribution'
+  },
+  {
+    id: 'translator',
+    name: 'Translator',
+    description: 'Saving the harmony of the context through languages',
+    color: 'oklch(0.72 0.16 150)',
+    icon: '🌐',
+    category: 'contribution'
+  },
+  {
+    id: 'archeborne',
+    name: 'Archeborne',
+    description: 'Exist',
+    color: 'oklch(0.50 0.15 270)',
+    icon: '🗿',
     category: 'special'
+  },
+  {
+    id: 'member',
+    name: 'Dream Maker',
+    description: 'Member of the community',
+    color: 'oklch(0.65 0.15 250)',
+    icon: '✦',
+    category: 'activity'
   }
 ]
 
@@ -121,7 +161,7 @@ function App() {
     level: 11,
     rank: 'arcadia',
     rulesAgreed: false,
-    roles: ['dev-ts', 'cloud-azure'],
+    roles: ['member', 'dreamer'],
     joinedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString()
   })
 
@@ -244,7 +284,7 @@ function App() {
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">
-            <ProfileCard profile={profile} />
+            <ProfileCard profile={profile} availableRoles={MOCK_ROLES} />
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}

@@ -4,14 +4,15 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import type { UserProfile } from '@/lib/types'
+import type { UserProfile, ServerRole } from '@/lib/types'
 import { xpProgress, getRankColor } from '@/lib/types'
 
 interface ProfileCardProps {
   profile: UserProfile
+  availableRoles?: ServerRole[]
 }
 
-export function ProfileCard({ profile }: ProfileCardProps) {
+export function ProfileCard({ profile, availableRoles = [] }: ProfileCardProps) {
   const progress = xpProgress(profile.xp)
   const rankColor = getRankColor(profile.rank)
   const joinDate = new Date(profile.joinedAt).toLocaleDateString('en-US', { 
@@ -19,6 +20,14 @@ export function ProfileCard({ profile }: ProfileCardProps) {
     month: 'short', 
     day: 'numeric' 
   })
+
+  const getUserRoles = () => {
+    return profile.roles
+      .map(roleId => availableRoles.find(r => r.id === roleId))
+      .filter((role): role is ServerRole => role !== undefined)
+  }
+
+  const userRoles = getUserRoles()
 
   return (
     <motion.div
@@ -178,28 +187,30 @@ export function ProfileCard({ profile }: ProfileCardProps) {
             </div>
           </motion.div>
 
-          {profile.roles.length > 0 && (
+          {userRoles.length > 0 && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
               className="flex flex-wrap gap-2 pt-2"
             >
-              {profile.roles.slice(0, 5).map((role, index) => (
+              {userRoles.slice(0, 5).map((role, index) => (
                 <Badge 
-                  key={role} 
-                  variant="secondary"
-                  className="text-xs"
+                  key={role.id} 
+                  className="text-xs font-semibold"
                   style={{
+                    backgroundColor: role.color,
+                    color: 'oklch(0.98 0 0)',
                     animationDelay: `${index * 0.1}s`
                   }}
                 >
-                  {role}
+                  {role.icon && <span className="mr-1">{role.icon}</span>}
+                  {role.name}
                 </Badge>
               ))}
-              {profile.roles.length > 5 && (
+              {userRoles.length > 5 && (
                 <Badge variant="outline" className="text-xs">
-                  +{profile.roles.length - 5} more
+                  +{userRoles.length - 5} more
                 </Badge>
               )}
             </motion.div>
