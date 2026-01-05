@@ -119,9 +119,6 @@ export function RoleCustomizer({ availableRoles, currentRoles, onSave }: RoleCus
                               />
                               <div className="flex-1 space-y-2">
                                 <div className="flex items-center gap-2">
-                                  {role.icon && (
-                                    <span className="text-lg">{role.icon}</span>
-                                  )}
                                   <h4 className="font-semibold text-card-foreground">
                                     {role.name}
                                   </h4>
@@ -135,17 +132,6 @@ export function RoleCustomizer({ availableRoles, currentRoles, onSave }: RoleCus
                                 <p className="text-sm text-muted-foreground leading-snug">
                                   {role.description}
                                 </p>
-                                {role.color && (
-                                  <div className="flex items-center gap-2">
-                                    <div
-                                      className="w-3 h-3 rounded-full"
-                                      style={{ backgroundColor: role.color }}
-                                    />
-                                    <span className="text-xs text-muted-foreground">
-                                      Role Color
-                                    </span>
-                                  </div>
-                                )}
                               </div>
                             </div>
                           </CardContent>
