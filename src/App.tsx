@@ -1,365 +1,311 @@
 import { useState, useEffect } from 'react'
 import { useKV } from '@github/spark/hooks'
-import { motion } from 'framer-motion'
-import { Book, Gear, Users, Plug, User, Sparkle } from '@phosphor-icons/react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  ShieldCheck, 
+  Trophy, 
+  Play, 
+  Books,
+  Star,
+  Lock,
+  Check,
+  ArrowRight,
+  Confetti as ConfettiIcon
+} from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { toast, Toaster } from 'sonner'
-import { ProfileCard } from '@/components/ProfileCard'
-import { RulesDialog } from '@/components/RulesDialog'
-import { RoleCustomizer } from '@/components/RoleCustomizer'
-import { AIInsights } from '@/components/AIInsights'
-import { AIRoleRecommender } from '@/components/AIRoleRecommender'
-import { AIRulesAssistant } from '@/components/AIRulesAssistant'
-import { AIProfileSummary } from '@/components/AIProfileSummary'
-import { AIActivityAnalyzer } from '@/components/AIActivityAnalyzer'
-import type { UserProfile, ServerRole, Rule } from '@/lib/types'
-import { calculateLevel, getRankForLevel } from '@/lib/types'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
+import { Toaster, toast } from 'sonner'
+import { RULES, getQuizzesForRule } from '@/lib/rules'
+import { RuleLesson } from '@/components/RuleLesson'
+import { RuleQuiz } from '@/components/RuleQuiz'
+import { ProgressDashboard } from '@/components/ProgressDashboard'
+import { QuickReference } from '@/components/QuickReference'
+import { Confetti } from '@/components/Confetti'
 
-const MOCK_RULES: Rule[] = [
-  {
-    id: '1',
-    title: 'Be Respectful and Inclusive',
-    description: 'Treat all community members with respect. No harassment, hate speech, discrimination, or personal attacks. We welcome everyone regardless of background, experience level, or identity.'
-  },
-  {
-    id: '2',
-    title: 'Keep Content Appropriate',
-    description: 'Share content that is safe for work and appropriate for all ages. No NSFW, illegal, or harmful content. Keep discussions professional and constructive.'
-  },
-  {
-    id: '3',
-    title: 'No Spam or Self-Promotion',
-    description: 'Avoid excessive self-promotion, spam, or unsolicited advertising. Share your projects in designated channels and contribute meaningfully to discussions.'
-  },
-  {
-    id: '4',
-    title: 'Use Channels Appropriately',
-    description: 'Post content in the correct channels. Read channel descriptions before posting. Keep conversations on-topic and use threads for extended discussions.'
-  },
-  {
-    id: '5',
-    title: 'Respect Privacy and Security',
-    description: 'Do not share personal information of others without consent. Keep credentials, API keys, and sensitive data private. Report security issues to moderators.'
-  },
-  {
-    id: '6',
-    title: 'Follow Discord Terms of Service',
-    description: 'All Discord Terms of Service and Community Guidelines apply. Violations may result in warnings, temporary restrictions, or permanent bans.'
-  }
-]
-
-const MOCK_ROLES: ServerRole[] = [
-  {
-    id: 'cutie',
-    name: '☆ଓ｡ Cutie ｡ଓ☆',
-    description: 'Called sweetheart and means a person with whom someone is having a romantic relationship',
-    color: 'oklch(0.75 0.18 350)',
-    icon: '💕',
-    category: 'special'
-  },
-  {
-    id: 'luminelle',
-    name: 'Luminelle',
-    description: 'Lightbringer',
-    color: 'oklch(0.80 0.15 60)',
-    icon: '✨',
-    category: 'special'
-  },
-  {
-    id: 'dreamer',
-    name: 'Dreamer',
-    description: 'Visionary',
-    color: 'oklch(0.65 0.18 280)',
-    icon: '🌙',
-    category: 'interest'
-  },
-  {
-    id: 'enjoyer',
-    name: 'Community Fan',
-    description: 'Passionate supporter of the community',
-    color: 'oklch(0.70 0.15 200)',
-    icon: '🎮',
-    category: 'interest'
-  },
-  {
-    id: 'talent',
-    name: 'Rising Star',
-    description: 'Emerging talent in the community',
-    color: 'oklch(0.75 0.20 45)',
-    icon: '⭐',
-    category: 'contribution'
-  },
-  {
-    id: 'gifted',
-    name: 'Gifted',
-    description: 'Naturally talented individual',
-    color: 'oklch(0.72 0.17 320)',
-    icon: '🎁',
-    category: 'contribution'
-  },
-  {
-    id: 'thinker',
-    name: 'Thinker',
-    description: 'Intelli people',
-    color: 'oklch(0.60 0.18 240)',
-    icon: '🧠',
-    category: 'interest'
-  },
-  {
-    id: 'smart',
-    name: 'Smart',
-    description: 'Smart as it needs no explanation',
-    color: 'oklch(0.65 0.15 190)',
-    icon: '💡',
-    category: 'interest'
-  },
-  {
-    id: 'artist',
-    name: 'Artist',
-    description: 'Expresser',
-    color: 'oklch(0.70 0.20 30)',
-    icon: '🎨',
-    category: 'contribution'
-  },
-  {
-    id: 'creator',
-    name: 'Creator',
-    description: 'Creator',
-    color: 'oklch(0.68 0.18 90)',
-    icon: '🛠️',
-    category: 'contribution'
-  },
-  {
-    id: 'translator',
-    name: 'Translator',
-    description: 'Saving the harmony of the context through languages',
-    color: 'oklch(0.72 0.16 150)',
-    icon: '🌐',
-    category: 'contribution'
-  },
-  {
-    id: 'archeborne',
-    name: 'Archeborne',
-    description: 'Exist',
-    color: 'oklch(0.50 0.15 270)',
-    icon: '🗿',
-    category: 'special'
-  },
-  {
-    id: 'member',
-    name: 'Dream Maker',
-    description: 'Member of the community',
-    color: 'oklch(0.65 0.15 250)',
-    icon: '✦',
-    category: 'activity'
-  }
-]
+export interface RuleProgress {
+  ruleId: string
+  read: boolean
+  quizScore: number | null
+  quizAttempts: number
+  mastered: boolean
+}
 
 function App() {
-  const [profile, setProfile] = useKV<UserProfile>('user-profile', {
-    id: 'demo-user',
-    username: 'AzureDev',
-    discriminator: '8472',
-    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AzureDev',
-    xp: 12500,
-    level: 11,
-    rank: 'arcadia',
-    rulesAgreed: false,
-    roles: ['member', 'dreamer'],
-    joinedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString()
-  })
+  const [progress, setProgress] = useKV<RuleProgress[]>('rule-progress', 
+    RULES.map(rule => ({
+      ruleId: rule.id,
+      read: false,
+      quizScore: null,
+      quizAttempts: 0,
+      mastered: false
+    }))
+  )
+  
+  const [currentRuleIndex, setCurrentRuleIndex] = useKV<number>('current-rule-index', 0)
+  const [activeTab, setActiveTab] = useState<'learn' | 'quiz' | 'progress' | 'reference'>('learn')
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [totalPoints, setTotalPoints] = useKV<number>('total-points', 0)
 
-  const [botConnected, setBotConnected] = useState(true)
-  const [rulesDialogOpen, setRulesDialogOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState('profile')
+  const ruleIndex = currentRuleIndex ?? 0
+  const currentRule = RULES[ruleIndex]
+  const currentProgress = progress?.find(p => p.ruleId === currentRule?.id)
+  const totalRules = RULES.length
+  const completedRules = progress?.filter(p => p.read).length || 0
+  const masteredRules = progress?.filter(p => p.mastered).length || 0
+  const allRulesRead = progress?.every(p => p.read) || false
+  const allRulesMastered = progress?.every(p => p.mastered) || false
+
+  const overallProgress = (completedRules / totalRules) * 100
 
   useEffect(() => {
-    if (profile) {
-      const newLevel = calculateLevel(profile.xp)
-      const newRank = getRankForLevel(newLevel)
-      
-      if (newLevel !== profile.level || newRank !== profile.rank) {
-        setProfile(current => ({
-          ...current!,
-          level: newLevel,
-          rank: newRank
-        }))
-      }
+    if (allRulesMastered && masteredRules === totalRules) {
+      setShowConfetti(true)
+      setTimeout(() => setShowConfetti(false), 5000)
     }
-  }, [profile?.xp])
+  }, [allRulesMastered, masteredRules, totalRules])
 
-  const handleRulesAgree = () => {
-    setProfile(current => ({
-      ...current!,
-      rulesAgreed: true
-    }))
+  const handleRuleComplete = () => {
+    if (!currentProgress?.read && progress) {
+      setProgress(current => 
+        current!.map(p => 
+          p.ruleId === currentRule.id ? { ...p, read: true } : p
+        )
+      )
+      toast.success('Rule completed! Moving to next rule...', {
+        description: `You've read ${completedRules + 1} of ${totalRules} rules`
+      })
+      
+      setTimeout(() => {
+        const nextIndex = ruleIndex + 1
+        if (nextIndex < RULES.length) {
+          setCurrentRuleIndex(nextIndex)
+        } else {
+          toast.success('All rules read! Take quizzes to master them!', {
+            description: 'Switch to the Quiz tab to test your knowledge'
+          })
+          setActiveTab('progress')
+        }
+      }, 1500)
+    }
   }
 
-  const handleRolesSave = (newRoles: string[]) => {
-    setProfile(current => ({
-      ...current!,
-      roles: newRoles
-    }))
-  }
-
-  const handleAddRole = (roleId: string) => {
-    setProfile(current => ({
-      ...current!,
-      roles: [...current!.roles, roleId]
-    }))
-  }
-
-  const handleReconnectBot = () => {
-    toast.loading('Reconnecting to Discord bot...', { duration: 2000 })
-    setTimeout(() => {
-      setBotConnected(true)
-      toast.success('Bot reconnected successfully!')
-    }, 2000)
-  }
-
-  if (!profile) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="skeleton h-96 w-full max-w-4xl rounded-lg" />
-      </div>
+  const handleQuizComplete = (score: number, perfect: boolean) => {
+    if (!progress) return
+    
+    const quizQuestions = getQuizzesForRule(currentRule.id).length
+    const newPoints = score * 10
+    
+    setProgress(current => 
+      current!.map(p => 
+        p.ruleId === currentRule.id
+          ? { 
+              ...p, 
+              quizScore: score,
+              quizAttempts: p.quizAttempts + 1,
+              mastered: perfect
+            }
+          : p
+      )
     )
+
+    setTotalPoints(current => (current || 0) + newPoints)
+
+    if (perfect) {
+      setShowConfetti(true)
+      setTimeout(() => setShowConfetti(false), 3000)
+      toast.success('Perfect score! Rule mastered! 🎉', {
+        description: `+${newPoints} points earned`
+      })
+    } else {
+      toast.success(`Quiz complete! ${score}/${quizQuestions} correct`, {
+        description: `+${newPoints} points earned. ${perfect ? 'Rule mastered!' : 'Try again for a perfect score!'}`
+      })
+    }
+  }
+
+  const handleRuleSelect = (ruleIndex: number) => {
+    const targetProgress = progress?.[ruleIndex]
+    
+    if (ruleIndex === 0 || (ruleIndex > 0 && progress?.[ruleIndex - 1]?.read)) {
+      setCurrentRuleIndex(ruleIndex)
+      setActiveTab('learn')
+    } else {
+      toast.error('Complete previous rules first!', {
+        description: 'Rules must be completed in order'
+      })
+    }
+  }
+
+  const canAccessQuiz = currentProgress?.read || false
+
+  if (!progress || !currentRule) {
+    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <Toaster position="top-right" theme="dark" />
-      
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+      <Toaster position="top-right" />
+      {showConfetti && <Confetti />}
+
+      <div className="relative overflow-hidden pb-4">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
         <div 
-          className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
-          style={{ transform: 'translate(50%, -50%)' }}
+          className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"
+          style={{ transform: 'translate(30%, -30%)' }}
         />
       </div>
 
-      <div className="relative max-w-6xl mx-auto px-4 py-8 space-y-8">
+      <div className="relative max-w-5xl mx-auto px-4 py-6 space-y-6">
         <motion.header 
           className="space-y-4"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-primary/10 border-2 border-primary/30 relative">
-                <Users className="h-8 w-8 text-primary" weight="fill" />
-                <div className="absolute -top-1 -right-1 p-1 rounded-full bg-accent/20 border border-accent">
-                  <Sparkle className="h-3 w-3 text-accent" weight="fill" />
-                </div>
+              <div className="p-3 rounded-xl bg-primary/10 border-2 border-primary/30">
+                <ShieldCheck className="h-8 w-8 text-primary" weight="fill" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold tracking-tight">
-                  Azure Community
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+                  Learn Community Rules
                 </h1>
                 <p className="text-muted-foreground">
-                  AI-Powered Member Hub
+                  Azure Community • Interactive Learning
                 </p>
               </div>
             </div>
 
-            {!botConnected && (
-              <Button
-                variant="outline"
-                onClick={handleReconnectBot}
-                className="gap-2"
-              >
-                <Plug className="h-4 w-4" />
-                Reconnect Bot
-              </Button>
-            )}
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm text-muted-foreground">Total Points</p>
+                <p className="text-2xl font-bold font-mono text-primary">{totalPoints}</p>
+              </div>
+              {allRulesMastered && (
+                <Badge className="bg-celebration text-white px-4 py-2 text-base">
+                  <Trophy className="h-4 w-4 mr-1" weight="fill" />
+                  Rules Master
+                </Badge>
+              )}
+            </div>
           </div>
 
-          <div className="flex gap-3">
-            <Button
-              variant={profile.rulesAgreed ? 'outline' : 'default'}
-              onClick={() => setRulesDialogOpen(true)}
-              className="gap-2"
-            >
-              <Book className="h-4 w-4" weight="fill" />
-              {profile.rulesAgreed ? 'View Rules' : 'Read & Agree to Rules'}
-            </Button>
-          </div>
+          <Card className="p-4 border-2">
+            <div className="space-y-2">
+              <div className="flex justify-between items-center text-sm">
+                <span className="font-medium">Overall Progress</span>
+                <span className="text-muted-foreground">
+                  {completedRules}/{totalRules} rules completed • {masteredRules} mastered
+                </span>
+              </div>
+              <Progress value={overallProgress} className="h-3" />
+            </div>
+          </Card>
         </motion.header>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-card border border-border">
-            <TabsTrigger value="profile" className="gap-2">
-              <User className="h-4 w-4" />
-              Profile
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 h-auto p-1">
+            <TabsTrigger value="learn" className="gap-2 py-3">
+              <Books className="h-4 w-4" weight="fill" />
+              <span className="hidden sm:inline">Learn</span>
             </TabsTrigger>
-            <TabsTrigger value="ai-tools" className="gap-2 relative">
-              <Sparkle className="h-4 w-4" weight="fill" />
-              AI Tools
-              <span className="absolute -top-1 -right-1 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-              </span>
+            <TabsTrigger value="quiz" className="gap-2 py-3" disabled={!canAccessQuiz}>
+              <Play className="h-4 w-4" weight="fill" />
+              <span className="hidden sm:inline">Quiz</span>
+              {!canAccessQuiz && <Lock className="h-3 w-3" />}
             </TabsTrigger>
-            <TabsTrigger value="roles" className="gap-2">
-              <Gear className="h-4 w-4" />
-              Customize Roles
+            <TabsTrigger value="progress" className="gap-2 py-3">
+              <Trophy className="h-4 w-4" weight="fill" />
+              <span className="hidden sm:inline">Progress</span>
+            </TabsTrigger>
+            <TabsTrigger value="reference" className="gap-2 py-3">
+              <ShieldCheck className="h-4 w-4" weight="fill" />
+              <span className="hidden sm:inline">Reference</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="profile" className="space-y-6">
-            <ProfileCard profile={profile} availableRoles={MOCK_ROLES} />
+          <AnimatePresence mode="wait">
+            <TabsContent value="learn" className="space-y-6">
+              <motion.div
+                key={`learn-${ruleIndex}`}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <RuleLesson 
+                  rule={currentRule}
+                  isCompleted={currentProgress?.read || false}
+                  onComplete={handleRuleComplete}
+                  ruleNumber={ruleIndex + 1}
+                  totalRules={totalRules}
+                />
+              </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="bg-card border-2 border-border rounded-lg p-6"
-            >
-              <h3 className="text-lg font-semibold mb-2">About Profile Cards</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
-                Your profile card displays your Azure Community rank, level, and XP progress. 
-                Earn XP by participating in discussions, helping others, and contributing to the community. 
-                Ranks progress from <span className="font-semibold" style={{ color: 'oklch(0.65 0.15 60)' }}>Accordian</span> → 
-                <span className="font-semibold" style={{ color: 'oklch(0.70 0.02 250)' }}> Arcadia</span> → 
-                <span className="font-semibold" style={{ color: 'oklch(0.75 0.18 90)' }}> Apex</span> → 
-                <span className="font-semibold" style={{ color: 'oklch(0.60 0.20 290)' }}> Legendary</span>.
-              </p>
-            </motion.div>
-          </TabsContent>
+              {ruleIndex < RULES.length - 1 && (
+                <div className="flex justify-center">
+                  <Button
+                    onClick={() => setCurrentRuleIndex(ruleIndex + 1)}
+                    variant="ghost"
+                    className="gap-2"
+                    disabled={!currentProgress?.read}
+                  >
+                    Skip to Next Rule
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+            </TabsContent>
 
-          <TabsContent value="ai-tools" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <AIInsights profile={profile} />
-              <AIActivityAnalyzer profile={profile} />
-              <AIProfileSummary profile={profile} availableRoles={MOCK_ROLES} />
-              <AIRoleRecommender 
-                profile={profile} 
-                availableRoles={MOCK_ROLES}
-                onAddRole={handleAddRole}
+            <TabsContent value="quiz" className="space-y-6">
+              <motion.div
+                key={`quiz-${ruleIndex}`}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {canAccessQuiz ? (
+                  <RuleQuiz
+                    rule={currentRule}
+                    quizzes={getQuizzesForRule(currentRule.id)}
+                    onComplete={handleQuizComplete}
+                    previousScore={currentProgress?.quizScore ?? null}
+                    isMastered={currentProgress?.mastered || false}
+                  />
+                ) : (
+                  <Card className="p-12 text-center">
+                    <Lock className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold mb-2">Quiz Locked</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Complete the lesson first to unlock the quiz
+                    </p>
+                    <Button onClick={() => setActiveTab('learn')}>
+                      Go to Lesson
+                    </Button>
+                  </Card>
+                )}
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="progress" className="space-y-6">
+              <ProgressDashboard
+                rules={RULES}
+                progress={progress}
+                totalPoints={totalPoints || 0}
+                onRuleSelect={handleRuleSelect}
               />
-              <div className="lg:col-span-2">
-                <AIRulesAssistant rules={MOCK_RULES} />
-              </div>
-            </div>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="roles" className="space-y-6">
-            <RoleCustomizer
-              availableRoles={MOCK_ROLES}
-              currentRoles={profile.roles}
-              onSave={handleRolesSave}
-            />
-          </TabsContent>
+            <TabsContent value="reference" className="space-y-6">
+              <QuickReference rules={RULES} progress={progress} />
+            </TabsContent>
+          </AnimatePresence>
         </Tabs>
       </div>
-
-      <RulesDialog
-        open={rulesDialogOpen}
-        onOpenChange={setRulesDialogOpen}
-        rules={MOCK_RULES}
-        onAgree={handleRulesAgree}
-        hasAgreed={profile.rulesAgreed}
-      />
     </div>
   )
 }
