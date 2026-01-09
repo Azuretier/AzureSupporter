@@ -21,6 +21,7 @@ const client = new Client({
   ],
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (client as any).commands = new Collection();
 
 async function loadCommands() {
@@ -33,6 +34,7 @@ async function loadCommands() {
     const command = await import(filePath);
     
     if ('data' in command && 'execute' in command) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (client as any).commands.set(command.data.name, command);
       commands.push(command.data.toJSON());
       logger.info(`Loaded command: ${command.data.name}`);
@@ -63,6 +65,7 @@ async function loadEvents() {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function registerCommands(commands: any[]) {
   const rest = new REST().setToken(process.env.DISCORD_TOKEN!);
 
@@ -75,6 +78,7 @@ async function registerCommands(commands: any[]) {
         process.env.DISCORD_GUILD_ID!
       ),
       { body: commands },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as any[];
 
     logger.info(`Successfully reloaded ${data.length} application (/) commands.`);

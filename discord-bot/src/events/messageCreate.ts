@@ -1,4 +1,4 @@
-import { Events, type Client, type Message } from 'discord.js';
+import { Events, type Message } from 'discord.js';
 import { xpService } from '../services/xp.service.js';
 import { Logger } from '../utils/logger.js';
 

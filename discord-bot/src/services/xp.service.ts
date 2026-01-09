@@ -1,4 +1,4 @@
-import type { UserProfile, XPGain } from '../types/index.js';
+import type { UserProfile } from '../types/index.js';
 import { calculateLevel, getRankForLevel } from '../utils/xp.js';
 import { kvService } from './kv.service.js';
 import { Logger } from '../utils/logger.js';
@@ -10,7 +10,7 @@ export class XPService {
   private xpPerMessage: number = 10;
   private cooldownSeconds: number = 60;
 
-  async addXP(userId: string, username: string, amount: number, reason: string): Promise<{
+  async addXP(userId: string, username: string, amount: number, _reason: string): Promise<{
     profile: UserProfile;
     leveledUp: boolean;
     oldLevel: number;

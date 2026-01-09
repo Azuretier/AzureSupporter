@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkle, ArrowRight, User } from '@phosphor-icons/react'
+import { Sparkle, ArrowRight } from '@phosphor-icons/react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Badge } from '@/components/ui/badge'
 import type { UserProfile } from '@/lib/types'
 
 interface AIInsightsProps {
@@ -38,7 +37,7 @@ Keep the tone friendly, supportive, and community-focused. Be specific about the
 
       const result = await window.spark.llm(prompt, 'gpt-4o-mini')
       setInsights(result)
-    } catch (error) {
+    } catch {
       setInsights('Unable to generate insights at this time. Keep being an awesome community member!')
     } finally {
       setIsGenerating(false)

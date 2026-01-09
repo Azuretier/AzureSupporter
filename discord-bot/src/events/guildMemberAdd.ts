@@ -1,4 +1,4 @@
-import { Events, type Client, type GuildMember } from 'discord.js';
+import { Events, type GuildMember } from 'discord.js';
 import { Logger } from '../utils/logger.js';
 
 const logger = new Logger('GuildMemberAdd');

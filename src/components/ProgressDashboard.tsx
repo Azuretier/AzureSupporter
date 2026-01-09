@@ -16,8 +16,6 @@ interface ProgressDashboardProps {
 export function ProgressDashboard({ rules, progress, totalPoints, onRuleSelect }: ProgressDashboardProps) {
   const completedCount = progress.filter(p => p.read).length
   const masteredCount = progress.filter(p => p.mastered).length
-  const totalQuizScore = progress.reduce((sum, p) => sum + (p.quizScore || 0), 0)
-  const totalQuizQuestions = rules.length * 2
 
   return (
     <div className="space-y-6">

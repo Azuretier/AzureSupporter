@@ -10,7 +10,10 @@
     ],
     "module": "ESNext",
     "skipLibCheck": true,
+    "strict": true,
     "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -25,7 +28,7 @@
       "@/*": [
         "./src/*"
       ]
-    },
+    }
   },
   "include": [
     "src"

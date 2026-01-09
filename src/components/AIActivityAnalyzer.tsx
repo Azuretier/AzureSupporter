@@ -58,7 +58,7 @@ Make tips specific to their level and rank. High impact tips should lead to sign
       const result = await window.spark.llm(prompt, 'gpt-4o-mini', true)
       const parsed = JSON.parse(result)
       setTips(parsed.tips || [])
-    } catch (error) {
+    } catch {
       setTips([])
     } finally {
       setIsGenerating(false)

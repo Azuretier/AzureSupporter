@@ -5,11 +5,8 @@ import {
   Trophy, 
   Play, 
   Books,
-  Star,
   Lock,
-  Check,
-  ArrowRight,
-  Confetti as ConfettiIcon
+  ArrowRight
 } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -23,7 +20,7 @@ import { RuleQuiz } from '@/components/RuleQuiz'
 import { ProgressDashboard } from '@/components/ProgressDashboard'
 import { QuickReference } from '@/components/QuickReference'
 import { Confetti } from '@/components/Confetti'
-import { RetroDecorations } from '@/components/RetroDecorations'
+import { useKV } from '@/hooks/use-kv'
 
 export interface RuleProgress {
   ruleId: string
@@ -33,26 +30,7 @@ export interface RuleProgress {
   mastered: boolean
 }
 
-function useKV<T>(key: string, initialValue: T): [T, (value: T | ((prev: T) => T)) => void] {
-  const [state, setState] = useState<T>(() => {
-    try {
-      const item = localStorage.getItem(key)
-      return item ? JSON.parse(item) : initialValue
-    } catch {
-      return initialValue
-    }
-  })
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(key, JSON.stringify(state))
-    } catch {
-      console.error('Failed to save to localStorage')
-    }
-  }, [key, state])
-
-  return [state, setState]
-}
+type TabValue = 'learn' | 'quiz' | 'progress' | 'reference'
 
 function App() {
   const [progress, setProgress] = useKV<RuleProgress[]>('rule-progress', 
@@ -66,7 +44,7 @@ function App() {
   )
   
   const [currentRuleIndex, setCurrentRuleIndex] = useKV<number>('current-rule-index', 0)
-  const [activeTab, setActiveTab] = useState<'learn' | 'quiz' | 'progress' | 'reference'>('learn')
+  const [activeTab, setActiveTab] = useState<TabValue>('learn')
   const [showConfetti, setShowConfetti] = useState(false)
   const [totalPoints, setTotalPoints] = useKV<number>('total-points', 0)
 
@@ -76,7 +54,6 @@ function App() {
   const totalRules = RULES.length
   const completedRules = progress?.filter(p => p.read).length || 0
   const masteredRules = progress?.filter(p => p.mastered).length || 0
-  const allRulesRead = progress?.every(p => p.read) || false
   const allRulesMastered = progress?.every(p => p.mastered) || false
 
   const overallProgress = (completedRules / totalRules) * 100
@@ -148,8 +125,6 @@ function App() {
   }
 
   const handleRuleSelect = (ruleIndex: number) => {
-    const targetProgress = progress?.[ruleIndex]
-    
     if (ruleIndex === 0 || (ruleIndex > 0 && progress?.[ruleIndex - 1]?.read)) {
       setCurrentRuleIndex(ruleIndex)
       setActiveTab('learn')
@@ -235,7 +210,7 @@ function App() {
           </Card>
         </motion.header>
 
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="space-y-6">
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabValue)} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 h-auto p-1.5 bg-muted/50 border border-border/50 backdrop-blur-sm">
             <TabsTrigger value="learn" className="gap-2 py-3 font-medium data-[state=active]:bg-card data-[state=active]:shadow-sm">
               <Books className="h-4 w-4" weight="duotone" />
