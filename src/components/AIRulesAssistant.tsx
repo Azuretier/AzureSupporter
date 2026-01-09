@@ -65,7 +65,7 @@ Provide a concise, helpful answer (2-3 sentences max). If the question is about 
       }
 
       setMessages(prev => [...prev, assistantMessage])
-    } catch (error) {
+    } catch {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',

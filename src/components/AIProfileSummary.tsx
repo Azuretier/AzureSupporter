@@ -44,7 +44,7 @@ Make it sound natural and personalized. Don't just list stats - tell their story
 
       const result = await window.spark.llm(prompt, 'gpt-4o-mini')
       setSummary(result)
-    } catch (error) {
+    } catch {
       toast.error('Unable to generate summary', {
         description: 'Please try again later'
       })
@@ -61,7 +61,7 @@ Make it sound natural and personalized. Don't just list stats - tell their story
       setCopied(true)
       toast.success('Copied to clipboard!')
       setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
+    } catch {
       toast.error('Failed to copy')
     }
   }

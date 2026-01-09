@@ -1,7 +1,7 @@
 import type { ServerRole } from '../types/index.js';
 import { Logger } from '../utils/logger.js';
 
-const logger = new Logger('RoleService');
+const _logger = new Logger('RoleService');
 
 export const AVAILABLE_ROLES: ServerRole[] = [
   {

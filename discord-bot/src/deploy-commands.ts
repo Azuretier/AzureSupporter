@@ -35,10 +35,12 @@ async function deployCommands() {
         process.env.DISCORD_GUILD_ID!
       ),
       { body: commands },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as any[];
 
     console.log(`✅ Successfully reloaded ${data.length} application (/) commands.\n`);
     
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data.forEach((cmd: any) => {
       console.log(`   • /${cmd.name} - ${cmd.description}`);
     });

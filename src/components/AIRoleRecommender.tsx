@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Brain, Plus, Check } from '@phosphor-icons/react'
+import { Brain, Plus } from '@phosphor-icons/react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -62,7 +62,7 @@ Use the exact role IDs from the available roles list. Keep reasons brief and per
       const result = await window.spark.llm(prompt, 'gpt-4o-mini', true)
       const parsed = JSON.parse(result)
       setRecommendations(parsed.recommendations || [])
-    } catch (error) {
+    } catch {
       toast.error('Unable to generate recommendations', {
         description: 'Please try again later'
       })

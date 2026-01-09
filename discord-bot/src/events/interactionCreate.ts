@@ -1,4 +1,4 @@
-import { Events, type Interaction, type Client } from 'discord.js';
+import { Events, type Interaction } from 'discord.js';
 import { Logger } from '../utils/logger.js';
 
 const logger = new Logger('InteractionCreate');
@@ -7,6 +7,7 @@ export default {
   name: Events.InteractionCreate,
   async execute(interaction: Interaction) {
     if (interaction.isChatInputCommand()) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const command = (interaction.client as any).commands.get(interaction.commandName);
 
       if (!command) {
