@@ -1,5 +1,5 @@
 import type { RankCardData, Member, MemberCandidate } from './rank-card-types';
-import { calculateLevel, getRankForLevel } from './types';
+import { calculateLevel, getRankForLevel, xpForLevel } from './types';
 
 // Mock member data - in a real app, this would come from Firestore or a database
 const mockMembers: Record<string, Member[]> = {};
@@ -124,6 +124,10 @@ export async function ensureRankCard(
       const allMembers = members.sort((a, b) => b.xp - a.xp);
       const globalRank = allMembers.findIndex(m => m.userId === member.userId) + 1;
       
+      // Calculate XP to next level
+      const nextLevelXp = xpForLevel(member.level + 1);
+      const xpToNext = nextLevelXp - member.xp;
+      
       rankCard = {
         cardId,
         status: 'ready',
@@ -134,6 +138,7 @@ export async function ensureRankCard(
         avatarUrl: member.avatarUrl,
         level: member.level,
         xp: member.xp,
+        xpToNext,
         rank: member.rank,
         globalRank,
         guildId,

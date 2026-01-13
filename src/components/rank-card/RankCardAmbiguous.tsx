@@ -15,9 +15,9 @@ interface RankCardAmbiguousProps {
 export function RankCardAmbiguous({ candidates, guildId }: RankCardAmbiguousProps) {
   const navigate = useNavigate();
 
-  const handleSelectCandidate = (userId: string) => {
-    // Navigate to a specific user's rank card using their userId
-    navigate(`/guilds/${guildId}/rank-card-user/${userId}`);
+  const handleSelectCandidate = (displayName: string) => {
+    // Navigate to a specific user's rank card using their display name
+    navigate(`/guilds/${guildId}/rank-card/${encodeURIComponent(displayName)}`);
   };
 
   return (
@@ -62,7 +62,7 @@ export function RankCardAmbiguous({ candidates, guildId }: RankCardAmbiguousProp
                   transition={{ delay: 0.1 * index }}
                 >
                   <button
-                    onClick={() => handleSelectCandidate(candidate.userId)}
+                    onClick={() => handleSelectCandidate(candidate.displayName)}
                     className="w-full p-4 rounded-xl bg-gradient-to-r from-white to-gray-50 hover:from-purple-50 hover:to-indigo-50 border border-gray-200 hover:border-purple-300 transition-all duration-200 group"
                   >
                     <div className="flex items-center gap-4">
