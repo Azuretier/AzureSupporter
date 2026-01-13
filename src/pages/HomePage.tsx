@@ -21,14 +21,7 @@ import { ProgressDashboard } from '@/components/ProgressDashboard'
 import { QuickReference } from '@/components/QuickReference'
 import { Confetti } from '@/components/Confetti'
 import { useKV } from '@/hooks/use-kv'
-
-export interface RuleProgress {
-  ruleId: string
-  read: boolean
-  quizScore: number | null
-  quizAttempts: number
-  mastered: boolean
-}
+import type { RuleProgress } from '@/lib/types'
 
 type TabValue = 'learn' | 'quiz' | 'progress' | 'reference'
 

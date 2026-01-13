@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { Rule } from '@/lib/rules'
-import type { RuleProgress } from '@/App'
+import type { RuleProgress } from '@/lib/types'
 
 interface ProgressDashboardProps {
   rules: Rule[]

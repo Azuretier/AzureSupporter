@@ -1,5 +1,13 @@
 export type RankTier = 'accordian' | 'arcadia' | 'apex' | 'legendary'
 
+export interface RuleProgress {
+  ruleId: string
+  read: boolean
+  quizScore: number | null
+  quizAttempts: number
+  mastered: boolean
+}
+
 export interface UserProfile {
   id: string
   username: string

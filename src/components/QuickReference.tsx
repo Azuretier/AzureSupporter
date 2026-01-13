@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import type { Rule } from '@/lib/rules'
-import type { RuleProgress } from '@/App'
+import type { RuleProgress } from '@/lib/types'
 
 interface QuickReferenceProps {
   rules: Rule[]
