@@ -4,9 +4,9 @@
 
 <div align="center">
 
-### 🎯 Interactive Rules Learning • 🤖 Discord Bot • 🧠 AI-Powered Insights
+### 🎯 Interactive Rules Learning • 🤖 Discord Bot • 🧠 AI-Powered Insights • 🏆 Rank Cards
 
-A complete community management system with XP tracking, role customization, and intelligent assistance.
+A complete community management system with XP tracking, role customization, intelligent assistance, and beautiful rank card displays.
 
 </div>
 
@@ -69,6 +69,9 @@ Essential info:
 ### 🔧 **Technical Docs**
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)**  
   *System architecture & data flow*
+  
+- **[RANK_CARD_FEATURE.md](./RANK_CARD_FEATURE.md)**  
+  *Rank card implementation guide*
   
 - **[discord-bot/INTEGRATION.md](./discord-bot/INTEGRATION.md)**  
   *Integration details*
@@ -133,6 +136,7 @@ npm run dev
 - 📈 AI activity analysis
 - 🎭 Role customization interface
 - 📊 Beautiful profile cards
+- 🏅 **Unicode-safe rank cards** with real-time updates
 
 </td>
 <td width="50%">
@@ -178,6 +182,34 @@ npm run dev
 | Legendary | 50+ | 250,000+ | 👑 |
 
 **Earning XP:** 10 XP per message • 60-second cooldown
+
+---
+
+## 🏅 Rank Cards
+
+Beautiful, real-time rank cards that display user stats with Unicode support!
+
+**URL Format:**
+```
+/guilds/{guild_id}/rank-card/{user_display_name}
+```
+
+**Features:**
+- ✨ Full Unicode support (Japanese, emojis, special characters)
+- 🔄 Real-time updates every 3 seconds
+- 🎨 Modern gradient design with smooth animations
+- 🎯 Displays XP, level, rank, and global position
+- ⚡ Beautiful loading animations
+- 🔍 Smart error handling for not-found users
+
+**Example URLs:**
+```
+/guilds/123456/rank-card/Test%20User
+/guilds/123456/rank-card/%E3%81%82%E3%81%9A%E3%82%8C%E3%81%A3%E3%81%A8
+/guilds/123456/rank-card/Cool%20Dev%20%F0%9F%9A%80
+```
+
+**📖 Full documentation:** [RANK_CARD_FEATURE.md](./RANK_CARD_FEATURE.md)
 
 ---
 
