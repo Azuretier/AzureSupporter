@@ -37,6 +37,10 @@ export function RankCardPage() {
     const membersRef = collection(db, 'guilds', guildId, 'members');
     
     // Query using normalized field for case-insensitive search
+    // NOTE: This query requires a composite index in Firestore:
+    // - Collection: guilds/{guildId}/members
+    // - Fields: displayNameLower (Ascending), xp (Descending)
+    // Firebase will provide a link to create the index on first query
     const q = query(
       membersRef,
       where('displayNameLower', '==', normalizedDisplayName),
@@ -129,7 +133,7 @@ export function RankCardPage() {
           <div className="space-y-2">
             <h2 className="text-2xl font-bold">Multiple Members Found</h2>
             <p className="text-muted-foreground">
-              Multiple members have the same display name "{member?.displayName}". 
+              Multiple members have the same display name "{multipleMatches[0]?.displayName}". 
               Please select the correct member:
             </p>
           </div>

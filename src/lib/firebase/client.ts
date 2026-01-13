@@ -11,23 +11,23 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase app
-let app: FirebaseApp;
-let db: Firestore;
+// Singleton pattern - Firebase handles initialization safety internally
+// getApps() is thread-safe and prevents duplicate initialization
+let db: Firestore | null = null;
 
 export function initializeFirebase() {
   // Check if Firebase is already initialized
-  if (getApps().length === 0) {
-    app = initializeApp(firebaseConfig);
-  } else {
-    app = getApps()[0];
+  const existingApps = getApps();
+  const app = existingApps.length === 0 ? initializeApp(firebaseConfig) : existingApps[0];
+  
+  if (!db) {
+    db = getFirestore(app);
   }
   
-  db = getFirestore(app);
   return { app, db };
 }
 
-// Get Firestore instance
+// Get Firestore instance (lazy initialization)
 export function getDb(): Firestore {
   if (!db) {
     const { db: database } = initializeFirebase();
@@ -35,5 +35,3 @@ export function getDb(): Firestore {
   }
   return db;
 }
-
-export { app, db };

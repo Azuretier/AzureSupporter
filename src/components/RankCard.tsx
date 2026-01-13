@@ -96,8 +96,14 @@ export function RankCard({ member, isRealtime = false }: RankCardProps) {
                         alt={member.displayName}
                         className="w-full h-full rounded-full object-cover border-2 border-background"
                         onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                          e.currentTarget.parentElement!.innerHTML = `<div class="w-full h-full rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center border-2 border-background text-4xl font-bold text-foreground">${member.displayName[0]?.toUpperCase() || '?'}</div>`;
+                          const parent = e.currentTarget.parentElement;
+                          if (parent) {
+                            e.currentTarget.style.display = 'none';
+                            const fallback = document.createElement('div');
+                            fallback.className = 'w-full h-full rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center border-2 border-background text-4xl font-bold text-foreground';
+                            fallback.textContent = member.displayName[0]?.toUpperCase() || '?';
+                            parent.appendChild(fallback);
+                          }
                         }}
                       />
                     ) : (
