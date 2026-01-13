@@ -88,6 +88,9 @@ Essential info:
   
 - **[AI_FEATURES.md](./AI_FEATURES.md)**  
   *AI capabilities guide*
+  
+- **[RANK_CARD_DOCUMENTATION.md](./RANK_CARD_DOCUMENTATION.md)**  
+  *Rank card setup & usage*
 
 </td>
 </tr>
@@ -133,6 +136,8 @@ npm run dev
 - 📈 AI activity analysis
 - 🎭 Role customization interface
 - 📊 Beautiful profile cards
+- 🎴 **Real-time Discord rank cards** ⭐ NEW
+- ☕ Ko-fi donation integration
 
 </td>
 <td width="50%">
