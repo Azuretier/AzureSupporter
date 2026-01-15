@@ -6,8 +6,8 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import type { App } from 'firebase-admin/app';
 import { getFirestore, Firestore } from 'firebase-admin/firestore';
-import type { UserProfile, UserRuleProgress, XPCooldown, GuildConfig } from '../types/discord-community';
-import { calculateLevel, getRankForLevel } from '../types/discord-community';
+import type { UserProfile, UserRuleProgress, XPCooldown, GuildConfig } from '../types/discord-community.js';
+import { calculateLevel, getRankForLevel } from '../types/discord-community.js';
 
 let adminApp: App | null = null;
 let adminDb: Firestore | null = null;
@@ -18,7 +18,7 @@ function getAdminApp(): App {
   }
 
   const apps = getApps();
-  if (apps.length > 0) {
+  if (apps.length > 0 && apps[0]) {
     adminApp = apps[0];
     return adminApp;
   }

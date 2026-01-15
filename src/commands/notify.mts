@@ -37,8 +37,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 	const message = interaction.options.getString('message', true);
 	const color = interaction.options.getString('color') || 'Blue';
 
-	// Verify the channel is a text-based channel
-	if (!channel.isTextBased()) {
+	// Verify the channel is a text-based channel that supports sending messages
+	// The command builder restricts to GuildText and GuildAnnouncement, both have send()
+	if (!('send' in channel) || typeof channel.send !== 'function') {
 		await interaction.reply({ 
 			content: 'The selected channel must be a text channel!', 
 			ephemeral: true 

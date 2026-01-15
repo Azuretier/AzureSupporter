@@ -23,7 +23,7 @@ export default {
           `🚀 Level up! ${message.author} is now **Level ${result.profile!.level}**!`,
         ];
 
-        const randomMessage = levelUpMessages[Math.floor(Math.random() * levelUpMessages.length)];
+        const randomMessage = levelUpMessages[Math.floor(Math.random() * levelUpMessages.length)]!;
         
         await message.reply({
           content: randomMessage,
