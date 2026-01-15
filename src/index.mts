@@ -1,7 +1,6 @@
 import type { Interaction } from 'discord.js'
 import { Client, GatewayIntentBits, Events, REST, Routes, MessageFlags, Collection } from 'discord.js';
 import { config } from './config.mjs'
-import { handleInteractionExtras } from './events/interactionExtras.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -13,6 +12,7 @@ type ExtendedClient = Client & { commands: Collection<string, any> };
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
     ],
@@ -56,41 +56,46 @@ const commandFiles = fs.readdirSync(commandsPath).filter((file: string) => file.
     }
 })();
 
-// Botが起動した時のイベント
-client.once(Events.ClientReady, (readyClient) => {
-    console.log(`✅ 準備完了！ ${readyClient.user.tag} としてログインしました。`);
-});
+// Load and register events from src/events
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs
+    .readdirSync(eventsPath)
+    .filter((file: string) => file.endsWith('.ts') || file.endsWith('.mts'));
 
-// コマンド（インタラクション）を受け取った時のイベント
-client.on(Events.InteractionCreate, async (interaction: Interaction) => {
-    // Buttons / modals / etc
-    if (!interaction.isChatInputCommand()) {
-        await handleInteractionExtras(interaction);
-        return;
+// Prefer .ts over .mts when both exist (avoid double-registering duplicates)
+const selectedEventFiles = new Map<string, string>();
+for (const file of eventFiles) {
+    const ext = path.extname(file);
+    const base = file.slice(0, -ext.length);
+    const existing = selectedEventFiles.get(base);
+    if (!existing) {
+        selectedEventFiles.set(base, file);
+        continue;
     }
+    if (path.extname(existing) === '.mts' && ext === '.ts') {
+        selectedEventFiles.set(base, file);
+    }
+}
 
-    const command = (interaction.client as ExtendedClient).commands.get(interaction.commandName);
-    if (!command) {
-        console.error(`No command matching ${interaction.commandName} was found.`);
-        return;
-    }
-    try {
-        await command.execute(interaction);
-    } catch (error) {
-        console.error(error);
-        if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({
-                content: 'There was an error while executing this command!',
-                flags: MessageFlags.Ephemeral,
-            });
+(async () => {
+    for (const file of selectedEventFiles.values()) {
+        const filePath = path.join(eventsPath, file);
+        const eventModule = await import(pathToFileURL(filePath).href);
+        if (!('default' in eventModule)) continue;
+        const event = eventModule.default;
+
+        if (!event?.name || typeof event.execute !== 'function') {
+            console.log(`[WARNING] The event at ${filePath} is missing a required "name" or "execute" property.`);
+            continue;
+        }
+
+        if (event.once) {
+            client.once(event.name, (...args: any[]) => event.execute(...args));
         } else {
-            await interaction.reply({
-                content: 'There was an error while executing this command!',
-                flags: MessageFlags.Ephemeral,
-            });
+            client.on(event.name, (...args: any[]) => event.execute(...args));
         }
     }
-});
+})();
 
 async function assignRole(userId: string, roleType: 'EN' | 'JP') {
   try {
