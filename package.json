@@ -20,10 +20,11 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node src/index.mts",
+    "start": "tsx src/index.mts",
     "dev": "npx tsx watch src/index.mts"
   },
   "dependencies": {
+    "tsx": "^4.0.0",
     "cors": "^2.8.5",
     "discord.js": "^14.25.1",
     "dotenv": "^17.2.3",
