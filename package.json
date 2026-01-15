@@ -16,9 +16,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "npx tsx watch src/index.mts",
-    "deploy": "ts-node src/deploy-commands.ts"
+    "start": "ts-node src/index.mts",
+    "dev": "npx tsx watch src/index.mts"
   },
   "dependencies": {
     "cors": "^2.8.5",
