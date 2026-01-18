@@ -170,10 +170,18 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       .setStyle(ButtonStyle.Primary)
   );
 
-  await interaction.reply({
+  const channel = interaction.channel;
+  if (!channel || !channel.isSendable()) {
+    await interaction.reply({ content: 'Cannot send message to this channel.', ephemeral: true });
+    return;
+  }
+
+  await channel.send({
     content: 'サーバーへようこそ！ルールを読んでほしいです\n-# Welcome to the server! Please read the rules.\n',
     components: [row],
   });
+
+  await interaction.reply({ content: '✅ Rules message posted!', ephemeral: true });
 }
 
 // ============================================================================
