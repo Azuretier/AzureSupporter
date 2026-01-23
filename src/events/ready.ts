@@ -1,6 +1,7 @@
 import { Events, type Client } from 'discord.js';
 import { Logger } from '../utils/logger.mjs';
 import { registerRulesVerificationHandlers } from '../commands/rules-verification.mjs';
+import { twitchService } from '../services/twitch.service.mjs';
 
 const logger = new Logger('Ready');
 
@@ -15,5 +16,8 @@ export default {
     
     // Register rules verification handlers (ensures buttons work after bot restart)
     registerRulesVerificationHandlers(client);
+    
+    // Start Twitch stream monitoring
+    twitchService.start(client);
   }
 };
