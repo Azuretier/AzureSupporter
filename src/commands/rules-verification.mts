@@ -348,15 +348,15 @@ export async function handleRulesAgree(interaction: ButtonInteraction): Promise<
     // After a delay, show a modal for the user to send a message
     setTimeout(async () => {
       try {
-        // Send a button to open the modal (since we can't show modal after update)
+        // Send a link button to the chat channel
         await interaction.followUp({
           content: lang.messages.followUp,
           components: [
             new ActionRowBuilder<ButtonBuilder>().addComponents(
               new ButtonBuilder()
-                .setCustomId(`rules_modal_${lang.code}`)
                 .setLabel('💬 メッセージを送る / Send a message')
-                .setStyle(ButtonStyle.Secondary)
+                .setStyle(ButtonStyle.Link)
+                .setURL(`https://discord.com/channels/${interaction.guildId}/1450318945515999327`)
             ),
           ],
           ephemeral: true,
@@ -461,16 +461,16 @@ export async function handleShowFollowUp(interaction: ButtonInteraction): Promis
   if (!lang) return true;
 
   try {
-    // Update message and show the modal button
+    // Update message and show the link button to the chat channel
     await interaction.update({
       content: lang.messages.followUp,
       embeds: [],
       components: [
         new ActionRowBuilder<ButtonBuilder>().addComponents(
           new ButtonBuilder()
-            .setCustomId(`rules_modal_${lang.code}`)
             .setLabel('💬 メッセージを送る / Send a message')
-            .setStyle(ButtonStyle.Secondary)
+            .setStyle(ButtonStyle.Link)
+            .setURL(`https://discord.com/channels/${interaction.guildId}/1450318945515999327`)
         ),
       ],
     });
