@@ -147,7 +147,7 @@ export const LANGUAGES: Record<string, LanguageConfig> = {
       ruleProgress: '{current} ⋰ {total}',
       yesButton: 'はい',
       completed:
-        'ルールを読んでくれてありがとう♡ <@1462510711820521503> と <@1461233507849474180> ロールを付与したよ！！ サーバーへようこそ！🎉',
+        'ルールを読んでくれてありがとう♡ <@&1462510711820521503> と <@&1461233507849474180> ロールを付与したよ！！ サーバーへようこそ！🎉',
       alreadyCompleted:
         'ルールを読んでくれてありがとう♡',
       followUp:
