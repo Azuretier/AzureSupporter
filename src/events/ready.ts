@@ -2,6 +2,7 @@ import { Events, type Client } from 'discord.js';
 import { Logger } from '../utils/logger.mjs';
 import { registerRulesVerificationHandlers } from '../commands/rules-verification.mjs';
 import { twitchService } from '../services/twitch.service.mjs';
+import { githubService } from '../services/github.service.mjs';
 
 const logger = new Logger('Ready');
 
@@ -11,13 +12,16 @@ export default {
   execute(client: Client) {
     logger.info(`Bot ready! Logged in as ${client.user?.tag}`);
     logger.info(`Serving ${client.guilds.cache.size} guild(s)`);
-    
+
     client.user?.setActivity('Azure Community', { type: 3 });
-    
+
     // Register rules verification handlers (ensures buttons work after bot restart)
     registerRulesVerificationHandlers(client);
-    
+
     // Start Twitch stream monitoring
     twitchService.start(client);
+
+    // Start GitHub PR/commit notification service
+    githubService.start(client);
   }
 };
