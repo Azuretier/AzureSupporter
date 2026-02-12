@@ -103,6 +103,21 @@ class JSONDatabase {
         await this.load();
         return this.data!.guilds[guildId]?.config?.translator || null;
     }
+
+    /** VC設定を保存 */
+    async setVoiceConfig(guildId: string, config: { generatorChannelId: string; categoryId: string }) {
+        await this.load();
+        const guilds = this.data!.guilds;
+        if (!guilds[guildId]) guilds[guildId] = { users: {}, config: {} };
+        guilds[guildId].config.voice = config;
+        await this.save();
+    }
+
+    /** 全アクティブVCを取得 (起動時クリーンアップ用) */
+    async getAllActiveVCs() {
+        await this.load();
+        return this.data!.activeVoiceChannels;
+    }
 }
 
 export const dbService = new JSONDatabase();
